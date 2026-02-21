@@ -1,0 +1,39 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  vllm:
+    image: vllm/vllm-openai:latest
+    command: >
+      --model Qwen/Qwen2.5-7B-Instruct
+      --host 0.0.0.0
+      --port 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - vllm_hf:/data
+
+  backend:
+    build: ./backend
+    env_file: .env
+    ports:
+      - "8001:8001"
+    depends_on:
+      - qdrant
+      - vllm
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+    
+      - backend
+
+volumes:
+  qdrant_data:
+  vllm_hf:
