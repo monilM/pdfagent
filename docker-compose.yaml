@@ -11,9 +11,9 @@ services:
     command: >
       --model Qwen/Qwen2.5-7B-Instruct
       --host 0.0.0.0
-      --port 8000
+      --port 8002
     ports:
-      - "8000:8000"
+      - "8002:8002"
     volumes:
       - vllm_hf:/data
 
