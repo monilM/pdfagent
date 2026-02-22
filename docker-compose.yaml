@@ -1,39 +1,30 @@
 services:
   qdrant:
     image: qdrant/qdrant:latest
-    ports:
-      - "6333:6333"
+    ports: ["6333:6333"]
     volumes:
       - qdrant_data:/qdrant/storage
 
-  vllm:
-    image: vllm/vllm-openai:latest
-    command: >
-      --model Qwen/Qwen2.5-7B-Instruct
-      --host 0.0.0.0
-      --port 8002
-    ports:
-      - "8002:8002"
+  ollama:
+    image: ollama/ollama:latest
+    ports: ["11434:11434"]
     volumes:
-      - vllm_hf:/data
+      - ollama_data:/root/.ollama
 
   backend:
     build: ./backend
     env_file: .env
-    ports:
-      - "8001:8001"
+    ports: ["8001:8001"]
     depends_on:
       - qdrant
-      - vllm
+      - ollama
 
   frontend:
     build: ./frontend
-    ports:
-      - "5173:5173"
+    ports: ["5173:5173"]
     depends_on:
-    
       - backend
 
 volumes:
   qdrant_data:
-  vllm_hf:
+  ollama_data:
